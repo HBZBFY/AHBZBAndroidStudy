@@ -1,4 +1,4 @@
-package com.feiyue.gulimail.gulimailproduct;
+package com.feiyue.gulimail.product;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
