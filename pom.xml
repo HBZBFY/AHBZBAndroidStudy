@@ -14,5 +14,8 @@
 		<module>gulimail-coupon</module>
 		<module>gulimail-member</module>
 		<module>gulimail-order</module>
+		<module>renren-fast</module>
+		<module>renren-generator</module>
+		<module>gulimail-common</module>
 	</modules>
 </project>
