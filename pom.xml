@@ -8,14 +8,24 @@
 	<name>gulimail</name>
 	<description>聚合</description>
 	<packaging>pom</packaging>
+	<build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<configuration>
+				<source>1.8</source>
+				<target>1.8</target>
+			</configuration>
+		</plugin>
+	</plugins>
+	</build>
 	<modules>
 		<module>gulimail-product</module>
 		<module>gulimai-ware</module>
 		<module>gulimail-coupon</module>
 		<module>gulimail-member</module>
 		<module>gulimail-order</module>
-		<module>renren-fast</module>
-		<module>renren-generator</module>
 		<module>gulimail-common</module>
 	</modules>
 </project>
