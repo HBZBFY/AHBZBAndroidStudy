@@ -21,5 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
 
+    @Override
+    public List<CategoryEntity> listWithTree() {
+        // 查到所有数据
+        List<CategoryEntity> categoryList = baseMapper.selectList(null);
 
+        // 获取一级分类
+        List<CategoryEntity> collect = categoryList.stream().filter(categoryEntity -> categoryEntity.getParentCid() == 0)
+                .collect(Collectors.toList());
+
+        return collect;
+    }
 }
