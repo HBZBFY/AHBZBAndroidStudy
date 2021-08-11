@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.aliyun.oss.OSSClient;
 import com.feiyue.common.utils.R;
 import com.feiyue.gulimail.product.entity.CategoryEntity;
 import com.feiyue.gulimail.product.service.CategoryService;
@@ -22,11 +23,30 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private OSSClient ossClient;
+
     @RequestMapping("/list/tree")
-    public R list() {
+    public R listTree() {
         List<CategoryEntity> list = categoryService.listWithTree();
         return R.ok().put("data", list);
     }
 
+    @RequestMapping("/delete")
+    public R delete(@RequestBody Long[] catIds) {
+        categoryService.removeByIds(Arrays.asList(catIds));
+        return  R.ok();
+    }
 
+    @RequestMapping("save")
+    public R save(@RequestBody CategoryEntity categoryEntity) {
+        categoryService.save(categoryEntity);
+        return  R.ok();
+    }
+
+    @RequestMapping("getInfoById/{id}")
+    public R getInfoById(@PathVariable Long id) {
+        CategoryEntity categoryEntity = categoryService.getById(id);
+        return R.ok().put("data", categoryEntity);
+    }
 }

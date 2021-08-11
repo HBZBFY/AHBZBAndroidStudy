@@ -27,5 +27,6 @@
 		<module>gulimail-member</module>
 		<module>gulimail-order</module>
 		<module>gulimail-common</module>
+		<module>gulimail-third-party</module>
 	</modules>
 </project>
