@@ -27,7 +27,27 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         List<CategoryEntity> categoryList = baseMapper.selectList(null);
 
         // 获取一级分类
-        List<CategoryEntity> collect = categoryList.stream().filter(categoryEntity -> categoryEntity.getParentCid() == 0)
+        List<CategoryEntity> collect = categoryList.stream()
+                .filter(categoryEntity -> categoryEntity.getParentCid() == 0)
+                .map(menu -> {
+                    //获取子菜单
+                    menu.setChildren(getChildrens(menu, categoryList));
+                    return menu;
+                })
+                .sorted((o1, o2) -> (o1.getSort() == null ? 0: o1.getSort()) - (o2.getSort() == null ? 0: o2.getSort()))
+                .collect(Collectors.toList());
+        return collect;
+    }
+
+    private List<CategoryEntity> getChildrens(CategoryEntity root, List<CategoryEntity> all) {
+        List<CategoryEntity> collect = all.stream()
+                .filter(categoryEntity -> categoryEntity.getParentCid() == root.getCatId())
+                .map(menu -> {
+                    //获取子菜单
+                    menu.setChildren(getChildrens(menu, all));
+                    return menu;
+                })
+                .sorted((o1, o2) -> (o1.getSort() == null ? 0: o1.getSort()) - (o2.getSort() == null ? 0: o2.getSort()))
                 .collect(Collectors.toList());
 
         return collect;

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("product/category")
+@CrossOrigin
 public class CategoryController {
 
     @Autowired
@@ -26,4 +27,6 @@ public class CategoryController {
         List<CategoryEntity> list = categoryService.listWithTree();
         return R.ok().put("data", list);
     }
+
+
 }
