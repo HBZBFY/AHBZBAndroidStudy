@@ -21,7 +21,6 @@ public class GulimailException {
         Map<String, String> map = new HashMap<>();
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         fieldErrors.forEach(item -> map.put(item.getField(), item.getDefaultMessage()));
-        System.out.println("執行");
         return  R.error().put("錯誤信息", map);
     }
 }

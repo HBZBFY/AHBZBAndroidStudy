@@ -9,5 +9,7 @@ public interface CategoryService extends IService<CategoryEntity> {
 
 
     List<CategoryEntity> listWithTree();
+
+    Long[] findCatelogPath(Long catelogId);
 }
 
