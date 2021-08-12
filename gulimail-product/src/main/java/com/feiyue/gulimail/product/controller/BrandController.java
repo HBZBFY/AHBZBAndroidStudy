@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.feiyue.common.utils.PageUtils;
 import com.feiyue.common.utils.R;
 import com.feiyue.gulimail.product.entity.BrandEntity;
 import com.feiyue.gulimail.product.service.BrandService;
@@ -32,5 +33,10 @@ public class BrandController {
     public R save(@Valid @RequestBody BrandEntity brandEntity) {
         brandService.save(brandEntity);
         return R.ok();
+    }
+    @RequestMapping("/list")
+    public R list(@RequestParam Map<String, Object> parm) {
+        PageUtils page = brandService.queryPage(parm);
+        return R.ok().put("page", page);
     }
 }
