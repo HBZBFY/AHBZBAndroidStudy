@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.aliyun.oss.OSSClient;
 import com.feiyue.common.utils.R;
 import com.feiyue.gulimail.product.entity.CategoryEntity;
 import com.feiyue.gulimail.product.service.CategoryService;
@@ -22,9 +21,6 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
-
-    @Autowired
-    private OSSClient ossClient;
 
     @RequestMapping("/list/tree")
     public R listTree() {
