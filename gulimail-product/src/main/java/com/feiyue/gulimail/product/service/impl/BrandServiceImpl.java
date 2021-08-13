@@ -4,8 +4,10 @@ package com.feiyue.gulimail.product.service.impl;
 import com.feiyue.common.utils.PageUtils;
 import com.feiyue.common.utils.Query;
 import com.feiyue.gulimail.product.dao.BrandDao;
+import com.feiyue.gulimail.product.dao.CategoryBrandRelationDao;
 import com.feiyue.gulimail.product.entity.BrandEntity;
 import com.feiyue.gulimail.product.service.BrandService;
+import com.feiyue.gulimail.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
@@ -22,6 +24,8 @@ import org.springframework.util.StringUtils;
 @Service("brandService")
 public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> implements BrandService {
 
+    @Autowired
+    private CategoryBrandRelationService categoryBrandRelationService;
     @Override
     public PageUtils queryPage(Map<String, Object> parm) {
         String key = (String) parm.get("key");
@@ -31,5 +35,11 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
             queryWrapper.eq("brand_id", key).or().like("name", key);
         }
         return  new PageUtils(page);
+    }
+
+    @Override
+    public void updateDetail(BrandEntity brandEntity) {
+        this.updateById(brandEntity);
+        categoryBrandRelationService.updateBrandInfo(brandEntity.getBrandId(), brandEntity.getName());
     }
 }

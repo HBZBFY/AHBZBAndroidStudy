@@ -28,5 +28,6 @@
 		<module>gulimail-order</module>
 		<module>gulimail-common</module>
 		<module>gulimail-third-party</module>
+		<module>gulimail-gateway</module>
 	</modules>
 </project>

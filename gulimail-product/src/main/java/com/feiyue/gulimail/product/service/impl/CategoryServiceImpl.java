@@ -1,7 +1,9 @@
 package com.feiyue.gulimail.product.service.impl;
 
 import com.feiyue.gulimail.product.dao.CategoryDao;
+import com.feiyue.gulimail.product.entity.CategoryBrandRelationEntity;
 import com.feiyue.gulimail.product.entity.CategoryEntity;
+import com.feiyue.gulimail.product.service.CategoryBrandRelationService;
 import com.feiyue.gulimail.product.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    private CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public List<CategoryEntity> listWithTree() {
@@ -44,6 +49,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         List<Long> path = new ArrayList<>();
         Collections.reverse(path);
         return path.toArray(new Long[path.size()]);
+    }
+
+    @Override
+    public void updateAll(CategoryEntity categoryEntity) {
+        this.updateById(categoryEntity);
+        categoryBrandRelationService.updateBrandInfoByCatelog(categoryEntity.getCatId(), categoryEntity.getName());
     }
 
     private List<Long> finfParentPath(Long catelogId,  List<Long> path) {

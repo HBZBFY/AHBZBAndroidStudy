@@ -39,4 +39,11 @@ public class BrandController {
         PageUtils page = brandService.queryPage(parm);
         return R.ok().put("page", page);
     }
+    @RequestMapping("/update")
+    public R update(@RequestBody BrandEntity brandEntity) {
+        brandService.updateDetail(brandEntity);
+        return R.ok();
+    }
+
+
 }

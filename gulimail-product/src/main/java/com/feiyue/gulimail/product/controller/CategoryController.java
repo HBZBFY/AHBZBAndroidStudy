@@ -45,4 +45,10 @@ public class CategoryController {
         CategoryEntity categoryEntity = categoryService.getById(id);
         return R.ok().put("data", categoryEntity);
     }
+
+    @RequestMapping("update")
+    public R update(@RequestBody CategoryEntity categoryEntity) {
+        categoryService.updateAll(categoryEntity);
+        return R.ok();
+    }
 }
