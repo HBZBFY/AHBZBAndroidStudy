@@ -1,5 +1,7 @@
 package com.feiyue.gulimail.product.service.impl;
 
+import com.feiyue.common.utils.PageUtils;
+import com.feiyue.common.utils.Query;
 import com.feiyue.gulimail.product.dao.AttrAttrgroupRelationDao;
 import com.feiyue.gulimail.product.entity.AttrAttrgroupRelationEntity;
 import com.feiyue.gulimail.product.service.AttrAttrgroupRelationService;
@@ -18,4 +20,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 @Service("attrAttrgroupRelationService")
 public class AttrAttrgroupRelationServiceImpl extends ServiceImpl<AttrAttrgroupRelationDao, AttrAttrgroupRelationEntity> implements AttrAttrgroupRelationService {
 
+    @Override
+    public PageUtils queryPage(Map<String, Object> params) {
+        IPage<AttrAttrgroupRelationEntity> page = this.page(
+                new Query<AttrAttrgroupRelationEntity>().getPage(params),
+                new QueryWrapper<AttrAttrgroupRelationEntity>()
+        );
+        return new PageUtils(page);
+    }
 }

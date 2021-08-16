@@ -6,9 +6,12 @@ import java.util.Map;
 
 import com.feiyue.common.utils.PageUtils;
 import com.feiyue.common.utils.R;
+import com.feiyue.gulimail.product.entity.AttrEntity;
 import com.feiyue.gulimail.product.entity.AttrGroupEntity;
 import com.feiyue.gulimail.product.service.AttrGroupService;
+import com.feiyue.gulimail.product.service.AttrService;
 import com.feiyue.gulimail.product.service.CategoryService;
+import com.feiyue.gulimail.product.vo.AttrGroupRelationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +25,9 @@ public class AttrGroupController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private AttrService attrService;
+
     @RequestMapping("getAttrGroupByCategoryId/{id}")
     public R getAttrGroupByCategoryId(@RequestParam Map<String,Object> parms, @PathVariable("id") Long id) {
         PageUtils pages = attrGroupService.queryPage(parms, id);
@@ -33,5 +39,17 @@ public class AttrGroupController {
         Long[] path = categoryService.findCatelogPath(attrGroup.getCatelogId());
         attrGroup.setCatelogPath(path);
         return R.ok().put("data", attrGroup);
+    }
+
+    @GetMapping("/{attrgroupId}/attr/relation")
+    public R attrRelation(@PathVariable("attrgroupId") Long attrgroupId) {
+        List<AttrEntity> entities =  attrService.getRelationAttr(attrgroupId);
+        return R.ok().put("data",entities);
+    }
+
+    @PostMapping("/attr/relation/delete")
+    public R deleteRelation(@RequestBody  AttrGroupRelationVo[] vos){
+        attrService.deleteRelation(vos);
+        return R.ok();
     }
 }
