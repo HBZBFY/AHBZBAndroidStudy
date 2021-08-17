@@ -22,7 +22,7 @@
 	</build>
 	<modules>
 		<module>gulimail-product</module>
-		<module>gulimai-ware</module>
+		<module>gulimail-ware</module>
 		<module>gulimail-coupon</module>
 		<module>gulimail-member</module>
 		<module>gulimail-order</module>
