@@ -3,6 +3,7 @@ package com.feiyue.gulimail.product.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.feiyue.common.utils.PageUtils;
 import com.feiyue.common.utils.R;
 import com.feiyue.gulimail.product.service.SpuInfoService;
 import com.feiyue.gulimail.product.vo.SpuSaveVo;
@@ -27,6 +28,12 @@ public class SpuInfoController {
     public R save(@RequestBody SpuSaveVo vo){
         spuInfoService.saveSpuInfo(vo);
         return R.ok();
+    }
+
+    @RequestMapping("list")
+    public R list (@RequestParam Map<String, Object> param) {
+        PageUtils page = spuInfoService.queryPage(param);
+        return R.ok().put("data", page);
     }
 
 }

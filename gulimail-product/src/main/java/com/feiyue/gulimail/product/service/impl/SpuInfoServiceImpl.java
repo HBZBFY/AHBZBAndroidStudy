@@ -1,11 +1,13 @@
 package com.feiyue.gulimail.product.service.impl;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.feiyue.common.to.SkuReductionTo;
 import com.feiyue.common.to.SpuBoundTo;
+import com.feiyue.common.utils.PageUtils;
+import com.feiyue.common.utils.Query;
 import com.feiyue.common.utils.R;
 import com.feiyue.gulimail.product.dao.AttrDao;
-import com.feiyue.gulimail.product.dao.SpuImagesDao;
 import com.feiyue.gulimail.product.dao.SpuInfoDao;
 import com.feiyue.gulimail.product.dao.SpuInfoDescDao;
 import com.feiyue.gulimail.product.entity.*;
@@ -24,10 +26,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 
@@ -163,5 +163,18 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 }
             });
         }
+    }
+
+    @Override
+    public PageUtils queryPage(Map<String, Object> param) {
+        QueryWrapper<SpuInfoEntity> queryWrapper = new QueryWrapper<>();
+
+        String key = (String) param.get("key");
+
+        IPage<SpuInfoEntity> page = this.page(new Query<SpuInfoEntity>().getPage(param), queryWrapper);
+        if (!StringUtils.isEmpty(key)) {
+            queryWrapper.like("spuName", key);
+        }
+        return new PageUtils(page);
     }
 }
