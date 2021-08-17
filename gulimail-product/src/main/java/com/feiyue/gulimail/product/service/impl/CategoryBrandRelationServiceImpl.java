@@ -14,6 +14,7 @@ import com.feiyue.gulimail.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -43,5 +44,21 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         categoryBrandRelationEntity.setCatelogId(catId);
         categoryBrandRelationEntity.setCatelogName(name);
         this.update(categoryBrandRelationEntity, new UpdateWrapper<CategoryBrandRelationEntity>().eq("catelog_id", catId));
+    }
+
+    @Override
+    public List<CategoryBrandRelationEntity> getBrandList(Long catId) {
+        QueryWrapper<CategoryBrandRelationEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("catelog_id", catId);
+        List<CategoryBrandRelationEntity> categoryBrandRelationEntities = categoryBrandRelationDao.selectList(queryWrapper);
+        return categoryBrandRelationEntities;
+    }
+
+    @Override
+    public List<CategoryBrandRelationEntity> getCatelogList(Long brandId) {
+        QueryWrapper<CategoryBrandRelationEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("brand_id", brandId);
+        List<CategoryBrandRelationEntity> categoryBrandRelationEntities = categoryBrandRelationDao.selectList(queryWrapper);
+        return categoryBrandRelationEntities;
     }
 }

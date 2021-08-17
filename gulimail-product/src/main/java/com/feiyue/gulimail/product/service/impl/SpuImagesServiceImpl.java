@@ -18,5 +18,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class SpuImagesServiceImpl extends ServiceImpl<SpuImagesDao, SpuImagesEntity> implements SpuImagesService {
 
 
+    @Override
+    public void saveImages(List<String> images, Long id) {
 
+        if (images != null && !images.isEmpty()) {
+            images.stream().forEach(item -> {
+                SpuImagesEntity spuImagesEntity = new SpuImagesEntity();
+                spuImagesEntity.setId(id);
+                spuImagesEntity.setImgUrl(item);
+                this.save(spuImagesEntity);
+            });
+        }
+    }
 }

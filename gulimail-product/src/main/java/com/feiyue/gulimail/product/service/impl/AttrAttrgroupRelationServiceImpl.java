@@ -5,6 +5,7 @@ import com.feiyue.common.utils.Query;
 import com.feiyue.gulimail.product.dao.AttrAttrgroupRelationDao;
 import com.feiyue.gulimail.product.entity.AttrAttrgroupRelationEntity;
 import com.feiyue.gulimail.product.service.AttrAttrgroupRelationService;
+import com.feiyue.gulimail.product.vo.AttrGroupRelationVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,28 @@ public class AttrAttrgroupRelationServiceImpl extends ServiceImpl<AttrAttrgroupR
                 new QueryWrapper<AttrAttrgroupRelationEntity>()
         );
         return new PageUtils(page);
+    }
+
+    @Override
+    public void saveAttrGroupVo(List<AttrGroupRelationVo> attrGroupRelationVo) {
+        if (attrGroupRelationVo != null && !attrGroupRelationVo.isEmpty()) {
+            attrGroupRelationVo.forEach(item -> {
+                AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
+                attrAttrgroupRelationEntity.setAttrId(item.getAttrId());
+                attrAttrgroupRelationEntity.setAttrGroupId(item.getAttrGroupId());
+                this.save(attrAttrgroupRelationEntity);
+            });
+        }
+    }
+
+    @Override
+    public void deleteAttrGroupVo(List<AttrGroupRelationVo> attrGroupRelationVo) {
+        if (attrGroupRelationVo != null && !attrGroupRelationVo.isEmpty()) {
+            attrGroupRelationVo.forEach(item -> {
+                AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
+                BeanUtils.copyProperties(item, attrAttrgroupRelationEntity);
+                this.removeById(attrAttrgroupRelationEntity);
+            });
+        }
     }
 }

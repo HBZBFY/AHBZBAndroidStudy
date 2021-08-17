@@ -159,4 +159,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         }).collect(Collectors.toList());
         attrAttrgroupRelationDao.deleteBatchRelation(entities);
     }
+
+    @Override
+    public PageUtils getNoRelationAttr(Map<String, Object> params, Long attrgroupId) {
+        return null;
+    }
 }

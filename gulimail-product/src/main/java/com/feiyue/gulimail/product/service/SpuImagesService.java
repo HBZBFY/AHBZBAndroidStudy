@@ -8,5 +8,6 @@ import java.util.Map;
 
 public interface SpuImagesService extends IService<SpuImagesEntity> {
 
+    void saveImages(List<String> images, Long id);
 }
 
