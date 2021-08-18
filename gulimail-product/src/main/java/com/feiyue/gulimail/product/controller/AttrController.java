@@ -7,7 +7,9 @@ import java.util.Map;
 
 import com.feiyue.common.utils.PageUtils;
 import com.feiyue.common.utils.R;
+import com.feiyue.gulimail.product.entity.ProductAttrValueEntity;
 import com.feiyue.gulimail.product.service.AttrService;
+import com.feiyue.gulimail.product.service.ProductAttrValueService;
 import com.feiyue.gulimail.product.vo.AttrRespVo;
 import com.feiyue.gulimail.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class AttrController {
 
     @Autowired
     private AttrService attrService;
+
+    @Autowired
+    private ProductAttrValueService productAttrValueService;
 
     @RequestMapping("/save")
     public R save(@RequestBody AttrVo attrVo) {
@@ -44,6 +49,19 @@ public class AttrController {
     @RequestMapping("/update")
     public R update(@RequestBody AttrVo attrVo) {
         attrService.updateAttr(attrVo);
+        return R.ok();
+    }
+
+    @GetMapping("/base/listforspu/{spuId}")
+    public R getListForSpu(@PathVariable Long spuId) {
+        List<ProductAttrValueEntity> list = productAttrValueService.baseAttrlistforspu(spuId);
+        return R.ok().put("data", list);
+    }
+
+    @PostMapping("/update/{spuId}")
+    public R updateSpuAttr(@PathVariable("spuId") Long spuId,
+                           @RequestBody List<ProductAttrValueEntity> entities) {
+        productAttrValueService.updateSpuAttr(spuId, entities);
         return R.ok();
     }
 
