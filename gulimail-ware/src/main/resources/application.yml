@@ -1,0 +1,30 @@
+server:
+  port: 8003
+
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://120.78.181.116:3306/mail_wms
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 120.78.181.116:8848
+  application:
+    name: mail-ware
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+
+logging:
+  level:
+    com.feiyue: debug
