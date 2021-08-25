@@ -29,5 +29,6 @@
 		<module>gulimail-common</module>
 		<module>gulimail-third-party</module>
 		<module>gulimail-gateway</module>
+		<module>gulimail-search</module>
 	</modules>
 </project>
