@@ -4,6 +4,7 @@ package com.feiyue.gulimail.product.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.feiyue.common.to.SkuReductionTo;
 import com.feiyue.common.to.SpuBoundTo;
+import com.feiyue.common.to.es.SkuEsModel;
 import com.feiyue.common.utils.PageUtils;
 import com.feiyue.common.utils.Query;
 import com.feiyue.common.utils.R;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +48,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Autowired
     private AttrDao attrDao;
 
-    @Autowired
+    @Autowired(required = false)
     private CouponFeignService couponFeignService;
 
     @Autowired
@@ -57,6 +59,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
+
+    @Autowired
+    private BrandService brandService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @Override
     public void saveSpuInfo(SpuSaveVo vo) {
@@ -176,5 +184,28 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             queryWrapper.like("spuName", key);
         }
         return new PageUtils(page);
+    }
+
+    @Override
+    public void up(Long spuId) {
+
+        List<SkuInfoEntity> skuInfoEntityList = skuInfoService.getSkusBySpuId(spuId);
+        List<SkuEsModel> list = skuInfoEntityList.stream().map(item -> {
+            SkuEsModel skuEsModel = new SkuEsModel();
+            BeanUtils.copyProperties(item, skuEsModel);
+            skuEsModel.setSkuPrice(item.getPrice());
+            skuEsModel.setSkuImg(item.getSkuDefaultImg());
+
+            // 设置品牌信息
+            BrandEntity brandEntity = brandService.getById(item.getBrandId());
+            skuEsModel.setBrandImg(brandEntity.getLogo());
+            skuEsModel.setBrandName(brandEntity.getName());
+
+            // 分类信息
+            CategoryEntity categoryEntity = categoryService.getById(item.getCatalogId());
+            skuEsModel.setCatalogName(categoryEntity.getName());
+
+            return skuEsModel;
+        }).collect(Collectors.toList());
     }
 }
