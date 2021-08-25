@@ -1,7 +1,9 @@
 package com.feiyue.gulimail.product.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.feiyue.common.to.SkuReductionTo;
 import com.feiyue.common.to.SpuBoundTo;
 import com.feiyue.common.to.es.SkuEsModel;
@@ -18,19 +20,14 @@ import com.feiyue.gulimail.product.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import org.springframework.util.StringUtils;
 
 
 @Service("spuInfoService")
