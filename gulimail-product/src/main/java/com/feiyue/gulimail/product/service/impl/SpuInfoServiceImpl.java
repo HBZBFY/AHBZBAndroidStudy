@@ -10,11 +10,14 @@ import com.feiyue.common.to.es.SkuEsModel;
 import com.feiyue.common.utils.PageUtils;
 import com.feiyue.common.utils.Query;
 import com.feiyue.common.utils.R;
+import com.feiyue.common.vo.SkuHasStockVo;
 import com.feiyue.gulimail.product.dao.AttrDao;
 import com.feiyue.gulimail.product.dao.SpuInfoDao;
 import com.feiyue.gulimail.product.dao.SpuInfoDescDao;
 import com.feiyue.gulimail.product.entity.*;
 import com.feiyue.gulimail.product.feign.CouponFeignService;
+import com.feiyue.gulimail.product.feign.ElasticSearchFeignService;
+import com.feiyue.gulimail.product.feign.WareFeignService;
 import com.feiyue.gulimail.product.service.*;
 import com.feiyue.gulimail.product.vo.*;
 import org.springframework.beans.BeanUtils;
@@ -23,9 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired(required = false)
+    private WareFeignService wareFeignService;
+
+    @Autowired(required = false)
+    private ElasticSearchFeignService elasticSearchFeignService;
 
     @Override
     public void saveSpuInfo(SpuSaveVo vo) {
@@ -187,12 +194,32 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     public void up(Long spuId) {
 
         List<SkuInfoEntity> skuInfoEntityList = skuInfoService.getSkusBySpuId(spuId);
+        List<ProductAttrValueEntity> productAttrValueEntitieList = productAttrValueService.baseAttrlistforspu(spuId);
+        List<Long> collect = productAttrValueEntitieList.stream().map(item -> item.getAttrId()).collect(Collectors.toList());
+        List<Long> ids = attrDao.selectSearchAttrs(collect);
+        Set<Long> idsSet = new HashSet<>(ids);
+        List<SkuEsModel.Attrs> attrsList = new ArrayList<>();
+        List<Long> skuIds = skuInfoEntityList.stream().map(SkuInfoEntity::getSkuId).collect(Collectors.toList());
+        R r = wareFeignService.getSkuHasStock(skuIds);
+        List<SkuHasStockVo> skuHasStockVoList = (List<SkuHasStockVo>) r.get("data");
+        Map<Long, Boolean> collect2 = skuHasStockVoList.stream().collect(Collectors.toMap(SkuHasStockVo::getSkuId, SkuHasStockVo::getHasStock));
+
+        List<SkuEsModel.Attrs> collect1 = productAttrValueEntitieList.stream()
+                .filter(item -> idsSet.contains(item.getAttrId()))
+                .map(item -> {
+                    SkuEsModel.Attrs attrs = new SkuEsModel.Attrs();
+                    BeanUtils.copyProperties(item, attrs);
+                    return attrs;
+                }).collect(Collectors.toList());
+
         List<SkuEsModel> list = skuInfoEntityList.stream().map(item -> {
             SkuEsModel skuEsModel = new SkuEsModel();
             BeanUtils.copyProperties(item, skuEsModel);
             skuEsModel.setSkuPrice(item.getPrice());
             skuEsModel.setSkuImg(item.getSkuDefaultImg());
+            skuEsModel.setHasStock(collect2.get(item.getSkuId()));
 
+            skuEsModel.setHotScore(0L);
             // 设置品牌信息
             BrandEntity brandEntity = brandService.getById(item.getBrandId());
             skuEsModel.setBrandImg(brandEntity.getLogo());
@@ -201,8 +228,16 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             // 分类信息
             CategoryEntity categoryEntity = categoryService.getById(item.getCatalogId());
             skuEsModel.setCatalogName(categoryEntity.getName());
-
+            skuEsModel.setAttrs(collect1);
             return skuEsModel;
         }).collect(Collectors.toList());
+
+        // ElasticSearch 存储索引
+        try{
+            elasticSearchFeignService.saveProduct(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
