@@ -8,13 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
-/**
- * 会员统计信息
- * 
- * @author leifengyang
- * @email leifengyang@gmail.com
- * @date 2019-10-08 09:47:05
- */
+
 @Data
 @TableName("ums_member_statistics_info")
 public class MemberStatisticsInfoEntity implements Serializable {

@@ -7,13 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
-/**
- * 会员收藏的专题活动
- * 
- * @author leifengyang
- * @email leifengyang@gmail.com
- * @date 2019-10-08 09:47:05
- */
+
 @Data
 @TableName("ums_member_collect_subject")
 public class MemberCollectSubjectEntity implements Serializable {
