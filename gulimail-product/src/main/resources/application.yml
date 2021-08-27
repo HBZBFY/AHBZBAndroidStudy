@@ -10,6 +10,10 @@ spring:
         server-addr: 120.78.181.116:8848
   application:
     name: mail-product
+  redis:
+    host: 120.78.181.116
+    port: 6379
+    password: 123
 
 mybatis-plus:
   mapper-locations: classpath:mapper/**/*.xml

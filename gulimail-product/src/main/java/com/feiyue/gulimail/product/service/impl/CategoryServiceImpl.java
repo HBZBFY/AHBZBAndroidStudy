@@ -1,11 +1,15 @@
 package com.feiyue.gulimail.product.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.feiyue.gulimail.product.dao.CategoryDao;
 import com.feiyue.gulimail.product.entity.CategoryBrandRelationEntity;
 import com.feiyue.gulimail.product.entity.CategoryEntity;
 import com.feiyue.gulimail.product.service.CategoryBrandRelationService;
 import com.feiyue.gulimail.product.service.CategoryService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,22 +30,34 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
     @Override
     public List<CategoryEntity> listWithTree() {
         // 查到所有数据
         List<CategoryEntity> categoryList = baseMapper.selectList(null);
 
-        // 获取一级分类
-        List<CategoryEntity> collect = categoryList.stream()
-                .filter(categoryEntity -> categoryEntity.getParentCid() == 0)
-                .map(menu -> {
-                    //获取子菜单
-                    menu.setChildren(getChildrens(menu, categoryList));
-                    return menu;
-                })
-                .sorted((o1, o2) -> (o1.getSort() == null ? 0: o1.getSort()) - (o2.getSort() == null ? 0: o2.getSort()))
-                .collect(Collectors.toList());
-        return collect;
+        String categoryList1 = redisTemplate.opsForValue().get("categoryList");
+
+        if (StringUtils.isNotBlank(categoryList1)) {
+            List<CategoryEntity> categoryEntities = JSONObject.parseObject(categoryList1, new TypeReference<List<CategoryEntity>>() {
+            });
+            return categoryEntities;
+        } else {// 获取一级分类
+            List<CategoryEntity> collect = categoryList.stream()
+                    .filter(categoryEntity -> categoryEntity.getParentCid() == 0)
+                    .map(menu -> {
+                        //获取子菜单
+                        menu.setChildren(getChildrens(menu, categoryList));
+                        return menu;
+                    })
+                    .sorted((o1, o2) -> (o1.getSort() == null ? 0: o1.getSort()) - (o2.getSort() == null ? 0: o2.getSort()))
+                    .collect(Collectors.toList());
+            redisTemplate.opsForValue().set("categoryList", JSONObject.toJSONString(collect));
+            return collect;
+        }
+
     }
 
     @Override

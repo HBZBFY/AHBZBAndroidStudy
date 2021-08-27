@@ -20,6 +20,8 @@ import com.feiyue.gulimail.product.vo.AttrRespVo;
 import com.feiyue.gulimail.product.vo.AttrVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundSetOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -50,6 +52,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public void saveVo(AttrVo attrVo) {
